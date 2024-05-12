@@ -4,32 +4,32 @@ const DOCUMENT_NAME = 'Shop';
 const COLLECTION_NAME = 'Shops'
 
 // Declare the Schema of the Mongo model
-const shopShema = new Schema({
-  name: {
-    type: String,
-    trim: true,
-      maxLength: 150
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  status: {
-      type: String,
-      enum: ['active, inactive'],
-      default: 'inactive'
-  },
+const shopSchema = new Schema({
+    name: {
+        type: String,
+        trim: true,
+        maxLength: 150
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    status: {
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'inactive'
+    },
     verify: {
         type: Schema.Types.Boolean,
         default: false
     },
     roles: {
-      type: Array,
+        type: Array,
         default: []
     }
 }, {
@@ -38,4 +38,4 @@ const shopShema = new Schema({
 });
 
 //Export the model
-module.exports = model(DOCUMENT_NAME, shopShema);
+module.exports = model(DOCUMENT_NAME, shopSchema);
