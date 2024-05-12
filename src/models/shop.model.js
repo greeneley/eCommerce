@@ -38,4 +38,4 @@ const shopShema = new Schema({
 });
 
 //Export the model
-module.exports = mongoose.model(DOCUMENT_NAME, shopShema);
+module.exports = model(DOCUMENT_NAME, shopShema);

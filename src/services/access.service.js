@@ -1,8 +1,10 @@
 'use strict'
 
 const shopModel = require("../models/shop.model")
-const bycrypt = require('bycrypt');
+const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const KeyTokenService = require("./keyToken.service");
+const {createTokenPair} = require("../auth/authUtils");
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -24,7 +26,7 @@ class AccessService {
                 }
             }
             
-            const passwordHash = await bycrypt.hash(password, 10)
+            const passwordHash = await bcrypt.hash(password, 10)
             const newShop = await shopModel.create({
                 name, email, password: passwordHash, roles: [RoleShop.SHOP]
             })
@@ -36,6 +38,38 @@ class AccessService {
                 })
 
                 console.log({privateKey, publicKey}); // save Collection KeyStore
+                
+                // Save public Key trong database
+                const publicKeyString = await KeyTokenService.createToken({
+                    userId: newShop._id,
+                    publicKey
+                })
+                
+                if (!publicKeyString) {
+                    return {
+                        code: 'xxx',
+                        message: "publicKeyString error!"
+                    }
+                }
+                
+                // const tokens = await
+                // created token pair dua vao publicKeyString (chua refresh token)
+                const tokens = await createTokenPair({userId: newShop._id, email}, publicKey, privateKey)
+
+                console.log(`Created token Successs:::`, tokens);
+                return {
+                    code: 201,
+                    metadata: {
+                        shop: newShop,
+                        tokens
+                    }
+                }
+                
+            }
+            
+            return {
+                code: 200,
+                metadata: null
             }
         } catch (error) {
             return {
