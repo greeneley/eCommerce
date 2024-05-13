@@ -78,7 +78,7 @@ class AccessService {
                     code: 201,
                     metadata: {
                         shop: getInfoData({fields: ['_id', 'name', 'email'], object: newShop}),
-                        tokens: keyStore
+                        tokens
                     }
                 }
 
