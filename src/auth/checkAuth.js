@@ -14,7 +14,7 @@ const apiKey = async (req, res, next) => {
 
         if (!key) {
             return res.status(403).json({
-                message: 'Forbidden Error'
+                message: 'Api key: Forbidden Error'
             })
         }
 
@@ -23,7 +23,7 @@ const apiKey = async (req, res, next) => {
 
         if (!objKey) {
             return res.status(403).json({
-                message: 'Forbidden Error'
+                message: 'Api key objKey: Forbidden Error'
             })
         }
 

@@ -6,7 +6,8 @@ const crypto = require('crypto');
 const KeyTokenService = require("./keyToken.service");
 const {createTokenPair} = require("../auth/authUtils");
 const {getInfoData} = require('../utils')
-const {BadRequestError} = require("../core/error.response");
+const {BadRequestError, AuthFailureError} = require("../core/error.response");
+const {findByEmail} = require("./shop.service");
 
 
 const RoleShop = {
@@ -17,6 +18,44 @@ const RoleShop = {
 }
 
 class AccessService {
+
+    /*
+        1 - check email in dbs
+        2 - match password 
+        3 - create AT and RF and save
+        4 - generate token
+        5 - get data return login
+     */
+    static login = async ({email, password, refreshToken = null}) => {
+        const foundShop = await findByEmail({email});
+
+        if (!foundShop) throw new BadRequestError("Shop not registered");
+
+        //2.
+        const match = bcrypt.compare(password, foundShop.password);
+
+        if (!match) throw new AuthFailureError('Authentication error');
+
+        //3.
+        const privateKey = crypto.randomBytes(64).toString('hex');
+        const publicKey = crypto.randomBytes(64).toString('hex');
+
+        const {_id: userId} = foundShop;
+
+        const tokens = await createTokenPair({userId, email}, publicKey, privateKey)
+
+        await KeyTokenService.createToken({
+            refreshToken: tokens.refreshToken,
+            privateKey,
+            publicKey,
+            userId
+        })
+        return {
+            shop: getInfoData({fields: ['_id', 'name', 'email'], object: foundShop}),
+            tokens
+        }
+    }
+
     static signUp = async ({name, email, password}) => {
 
         // step 1 check exist email

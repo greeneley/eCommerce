@@ -1,6 +1,6 @@
 'use strict'
 
-const mongoose = require('mongoose');
+const mongoose = require('mongoose').default;
 
 const { db: {host, port, name}} = require("../configs/config.mongodb");
 
@@ -19,7 +19,8 @@ class Database {
             mongoose.set('debug', true);
             mongoose.set('debug', {color: true});
         }
-         
+
+        console.log({connectString})
         mongoose.connect(connectString, {
             maxPoolSize: 50
         }).then(_ => console.log(`connected mongodb success PRO: ${connectString}`))

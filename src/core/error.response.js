@@ -1,14 +1,7 @@
 'use strict'
 
-const StatusCode  = {
-    FORBIDDEN: 403,
-    CONFLICT: 409
-}
 
-const ReasonStatusCode  = {
-    FORBIDDEN: 'Bad request',
-    CONFLICT: 'Conflict error'
-}
+const {StatusCodes, ReasonPhrases} = require("../utils/httpStatusCode")
 
 
 class ErrorResponse extends Error {
@@ -19,18 +12,25 @@ class ErrorResponse extends Error {
 }
 
 class ConflictRequestError extends ErrorResponse {
-    constructor(message = ReasonStatusCode.CONFLICT, statusCode = StatusCode.CONFLICT) {
+    constructor(message = ReasonPhrases.CONFLICT, statusCode = StatusCodes.CONFLICT) {
         super(message, statusCode);
     }
 }
 
 class BadRequestError extends ErrorResponse {
-    constructor(message = ReasonStatusCode.FORBIDDEN, statusCode = StatusCode.FORBIDDEN) {
+    constructor(message = ReasonPhrases.FORBIDDEN, statusCode = StatusCodes.FORBIDDEN) {
+        super(message, statusCode);
+    }
+}
+
+class AuthFailureError extends ErrorResponse {
+    constructor(statusCode = StatusCodes.UNAUTHORIZED, message = ReasonPhrases.UNAUTHORIZED) {
         super(message, statusCode);
     }
 }
 
 module.exports = {
     ConflictRequestError,
-    BadRequestError
+    BadRequestError,
+    AuthFailureError
 }
