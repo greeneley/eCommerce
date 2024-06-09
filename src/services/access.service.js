@@ -23,7 +23,7 @@ class AccessService {
     Check this token used ?
      */
     static handlerRefreshToken = async (refreshToken) => {
-        
+
         const foundToken = await KeyTokenService.findByRefreshTokenUsed(refreshToken);
         if (foundToken)  {
             // decode xem refreshtoken la ai
