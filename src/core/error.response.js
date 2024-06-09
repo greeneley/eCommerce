@@ -18,7 +18,7 @@ class ConflictRequestError extends ErrorResponse {
 }
 
 class BadRequestError extends ErrorResponse {
-    constructor(message = ReasonPhrases.FORBIDDEN, statusCode = StatusCodes.FORBIDDEN) {
+    constructor(message = ReasonPhrases.CONFLICT, statusCode = StatusCodes.FORBIDDEN) {
         super(message, statusCode);
     }
 }
@@ -35,9 +35,16 @@ class NotFoundError extends ErrorResponse {
     }
 }
 
+class ForbiddenError extends ErrorResponse {
+    constructor(statusCode = StatusCodes.FORBIDDEN, message = ReasonPhrases.FORBIDDEN) {
+        super(message, statusCode);
+    }
+}
+
 module.exports = {
     ConflictRequestError,
     BadRequestError,
     NotFoundError,
-    AuthFailureError
+    AuthFailureError,
+    ForbiddenError
 }

@@ -6,7 +6,7 @@ const { findByUserId } = require("../services/keyToken.service")
 
 const HEADER = {
     API_KEY: 'x-api-key',
-    CLIENT_ID: 'x-client',
+    CLIENT_ID: 'x-client-id',
     AUTHORIZATION: 'authorization'
 }
 const createTokenPair = async (payload, publicKey, privateKey) => {
@@ -51,7 +51,7 @@ const authentication  = asyncHandler( async (req, res, next) => {
     
     //2
     const keyStore = await findByUserId(userId);
-    if (!userId) throw new NotFoundError('keyStore not found');
+    if (!keyStore) throw new NotFoundError('keyStore not found');
 
     //3
     const accessToken = req.headers[HEADER.AUTHORIZATION];
@@ -67,7 +67,12 @@ const authentication  = asyncHandler( async (req, res, next) => {
     }
 })
 
+const verifyJWT = async(token,keySecret) => {
+    return await JWT.verify(token, keySecret);
+}
+
 module.exports = {
     createTokenPair,
-    authentication
+    authentication,
+    verifyJWT
 }
