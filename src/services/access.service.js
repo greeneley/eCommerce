@@ -51,7 +51,7 @@ class AccessService {
         
         // update token
         
-        await holderToken.update({
+        await holderToken.updateOne({
             $set: {
                 refreshToken: tokens.refreshToken
             },
