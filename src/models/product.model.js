@@ -1,7 +1,7 @@
 "use strict";
 
 const { model, Schema } = require("mongoose");
-
+const slugify = require("slugify");
 const DOCUMENT_NAME = "Product";
 const COLLECTION_NAME = "Products";
 
@@ -16,6 +16,7 @@ const productSchema = new Schema(
       required: true,
     },
     product_description: String,
+    product_slug: String,
     product_price: {
       type: Number,
       required: true,
@@ -34,12 +35,29 @@ const productSchema = new Schema(
       type: Schema.Types.Mixed,
       required: true,
     },
+    product_variations: { type: Array, default: [] },
+    product_ratingsAverage: {
+      type: Number,
+      default: 4.5,
+      min: [1, "Rating must be above 1.0"],
+      max: [5, "rating must be below 5.0"],
+      set: (val) => Math.round(val * 10) / 10,
+    },
+    isDraft: { type: Boolean, default: true, index: true, select: false },
+    isPublish: { type: Boolean, default: false, index: true, select: false },
   },
   {
     timestamps: true,
     collection: COLLECTION_NAME,
   },
 );
+
+// document middleware: run before .save() and .create();
+// webhook
+productSchema.pre("save", function (next) {
+  this.product_slug = slugify(this.product_name, { lower: true });
+  next();
+});
 
 // define the product type = clothing
 
