@@ -15,8 +15,13 @@ const {
   searchProductByUser,
   findAllProducts,
   findProduct,
+  updateProductById,
 } = require("../models/repositories/product.repo");
 
+const {
+  removeUndefinedObject,
+  updatedNestedObjectParser,
+} = require("../utils/index");
 class ProductFactory {
   static productRegistry = {}; //key -class
 
@@ -24,7 +29,7 @@ class ProductFactory {
     ProductFactory.productRegistry[type] = classRef;
   }
 
-  /// NEN HOC FACTORY + STRATEGY Nhu THe nay
+  /// NEN HOC FACTORY + STRATEGY Nhu  THe nay
   static async createProduct(type, payload) {
     const productClass = ProductFactory.productRegistry[type];
 
@@ -34,8 +39,12 @@ class ProductFactory {
     return new productClass(payload).createProduct();
   }
 
-  static async updateProduct({ product_shop, product_id }) {
-    return await publishProductByShop({ product_shop, product_id });
+  static async updateProduct(type, productId, payload) {
+    const productClass = ProductFactory.productRegistry[type];
+
+    if (!productClass)
+      throw new BadRequestError(`Invalid product type ${type}`);
+    return new productClass(payload).updateProduct(productId);
   }
 
   // PUT//
@@ -108,6 +117,12 @@ class Product {
   async createProduct(product_id) {
     return await product.create({ ...this, _id: product_id });
   }
+
+  // update product
+
+  async updateProduct(productId, bodyUpdate) {
+    return await updateProductById(productId, bodyUpdate, product);
+  }
 }
 
 // define subclass for different product types clothing & electronic
@@ -125,6 +140,26 @@ class Clothing extends Product {
     if (!newProduct) throw new BadRequestError("create new product error");
 
     return newProduct;
+  }
+
+  async updateProduct(product_id) {
+    // 1. remove attribute has null and undefined value
+    const objectParams = removeUndefinedObject(this);
+    // 2. Check xem update o dau
+
+    if (objectParams.product_attributes) {
+      // update child
+      await updateProductById(
+        product_id,
+        updatedNestedObjectParser(objectParams.product_attributes),
+        clothing,
+      );
+    }
+
+    return await super.updateProduct(
+      product_id,
+      updatedNestedObjectParser(objectParams),
+    );
   }
 }
 
