@@ -13,6 +13,8 @@ const {
   findAllPublishForShop,
   unPublishProductByShop,
   searchProductByUser,
+  findAllProducts,
+  findProduct,
 } = require("../models/repositories/product.repo");
 
 class ProductFactory {
@@ -30,6 +32,10 @@ class ProductFactory {
       throw new BadRequestError(`Invalid Product Type ${type}`);
 
     return new productClass(payload).createProduct();
+  }
+
+  static async updateProduct({ product_shop, product_id }) {
+    return await publishProductByShop({ product_shop, product_id });
   }
 
   // PUT//
@@ -55,6 +61,25 @@ class ProductFactory {
 
   static async searchProducts({ keySearch }) {
     return await searchProductByUser({ keySearch });
+  }
+
+  static async findAllProducts({
+    limit = 50,
+    sort = "ctime",
+    page = 1,
+    filter = { isPublished: true },
+  }) {
+    return await findAllProducts({
+      limit,
+      sort,
+      page,
+      filter,
+      select: ["product_name", "product_price", "product_thumb"],
+    });
+  }
+
+  static async findProduct({ product_id }) {
+    return await findProduct({ product_id, unSelect: ["__v"] });
   }
 }
 
