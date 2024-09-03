@@ -17,6 +17,7 @@ const {
   findProduct,
   updateProductById,
 } = require("../models/repositories/product.repo");
+const { insertInventory } = require("../models/repositories/inventory.repo");
 
 const {
   removeUndefinedObject,
@@ -115,7 +116,15 @@ class Product {
 
   // create new product
   async createProduct(product_id) {
-    return await product.create({ ...this, _id: product_id });
+    const newProduct = await product.create({ ...this, _id: product_id });
+    if (newProduct) {
+      await insertInventory({
+        productId: newProduct._id,
+        shopId: this.product_shop,
+        stock: this.product_quantity,
+      });
+    }
+    return newProduct;
   }
 
   // update product
@@ -178,6 +187,26 @@ class Electronic extends Product {
 
     return newProduct;
   }
+
+  async updateProduct(product_id) {
+    // 1. remove attribute has null and undefined value
+    const objectParams = removeUndefinedObject(this);
+    // 2. Check xem update o dau
+
+    if (objectParams.product_attributes) {
+      // update child
+      await updateProductById(
+        product_id,
+        updatedNestedObjectParser(objectParams.product_attributes),
+        electronic,
+      );
+    }
+
+    return await super.updateProduct(
+      product_id,
+      updatedNestedObjectParser(objectParams),
+    );
+  }
 }
 
 class Furniture extends Product {
@@ -194,6 +223,26 @@ class Furniture extends Product {
     if (!newProduct) throw new BadRequestError("create new product error");
 
     return newProduct;
+  }
+
+  async updateProduct(product_id) {
+    // 1. remove attribute has null and undefined value
+    const objectParams = removeUndefinedObject(this);
+    // 2. Check xem update o dau
+
+    if (objectParams.product_attributes) {
+      // update child
+      await updateProductById(
+        product_id,
+        updatedNestedObjectParser(objectParams.product_attributes),
+        furniture,
+      );
+    }
+
+    return await super.updateProduct(
+      product_id,
+      updatedNestedObjectParser(objectParams),
+    );
   }
 }
 
