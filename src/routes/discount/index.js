@@ -8,6 +8,7 @@ const productController = require("../../controllers/product.controller");
 const router = express.Router();
 
 router.post("/amount", asyncHandler(discountController.getDiscountAmount));
+router.patch("/update", asyncHandler(discountController.updateDiscountCode));
 router.get(
   "/list-product-code",
   asyncHandler(discountController.getAllDiscountCodesWithProducts),
@@ -18,5 +19,9 @@ router.use(authentication);
 
 router.post("", asyncHandler(discountController.createDiscountCode));
 router.get("", asyncHandler(discountController.getAllDiscountCodesByShop));
+router.delete(
+  "/delete",
+  asyncHandler(discountController.deleteDiscountCodeByShop),
+);
 
 module.exports = router;

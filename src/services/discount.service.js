@@ -85,11 +85,17 @@ class DiscountService {
   }
 
   static async updateDiscountCode(payload) {
-    const { discount_name } = payload;
+    const { discount_code } = payload;
 
-    return await discount.findByIdAndUpdate(discount_name, payload, {
-      new: isNew,
-    });
+    return await discount.findOneAndUpdate(
+      {
+        discount_code: discount_code,
+      },
+      payload,
+      {
+        new: true,
+      },
+    );
   }
 
   /*
@@ -246,7 +252,7 @@ class DiscountService {
     };
   }
 
-  static async deleteDiscountCode({ shopId, codeId }) {
+  static async deleteDiscountCodeByShop({ shopId, codeId }) {
     return await discount.findOneAndDelete({
       discount_code: codeId,
       discount_shopId: convertToObjectIdMongodb(shopId),

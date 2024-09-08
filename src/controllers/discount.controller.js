@@ -14,12 +14,11 @@ class DiscountController {
     }).send(res);
   };
 
-  getAllDiscountCodes = async (req, res) => {
+  updateDiscountCode = async (req, res) => {
     new SuccessResponse({
-      message: "Successfully code found!!",
-      metadata: await DiscountService.getAllDiscountCodesByShop({
-        ...req.query,
-        shopId: req.user.userId,
+      message: "Update successfully discount code !!",
+      metadata: await DiscountService.updateDiscountCode({
+        ...req.body,
       }),
     }).send(res);
   };
@@ -50,24 +49,16 @@ class DiscountController {
       }),
     }).send(res);
   };
-  // getAllDiscountCodes = async (req, res) => {
-  //   new SuccessResponse({
-  //     message: "Successfully code found!!",
-  //     metadata: await DiscountService.getAllDiscountCodesByShop({
-  //       ...req.query,
-  //       shopId: req.user.userId,
-  //     }),
-  //   }).send(res);
-  // };
-  // getAllDiscountCodes = async (req, res) => {
-  //   new SuccessResponse({
-  //     message: "Successfully code found!!",
-  //     metadata: await DiscountService.getAllDiscountCodesByShop({
-  //       ...req.query,
-  //       shopId: req.user.userId,
-  //     }),
-  //   }).send(res);
-  // };
+
+  deleteDiscountCodeByShop = async (req, res) => {
+    new SuccessResponse({
+      message: "Successfully code found!!",
+      metadata: await DiscountService.deleteDiscountCodeByShop({
+        ...req.body,
+        shopId: req.user.userId,
+      }),
+    }).send(res);
+  };
 }
 
 module.exports = new DiscountController();
