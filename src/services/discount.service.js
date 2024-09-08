@@ -52,7 +52,7 @@ class DiscountService {
     }
     // create index for discount code
 
-    const foundDiscount = checkDiscountExists({
+    const foundDiscount = await checkDiscountExists({
       model: discount,
       filter: {
         discount_code: code,
@@ -102,7 +102,7 @@ class DiscountService {
     limit,
     page,
   }) {
-    const foundDiscount = checkDiscountExists({
+    const foundDiscount = await checkDiscountExists({
       model: discount,
       filter: {
         discount_code: code,
@@ -235,7 +235,7 @@ class DiscountService {
     }
 
     const amount =
-      discount_type === "fixed"
+      discount_type === "fixed_amount"
         ? discount_value
         : totalOrder * (discount_value / 100);
 
