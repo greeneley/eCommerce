@@ -9,6 +9,7 @@ const {
 
 const { getSelectData, unGetSelectData } = require("../../utils/index");
 const { Types } = require("mongoose");
+const { convertToObjectIdMongodb } = require("../../utils");
 
 // Mục đích của repository dung de lam nhung~ queries đơn giản nhưng dùng tần suất nhiều lần cho service class.
 const findAllDraftForShop = async ({ query, limit, skip }) => {
@@ -102,6 +103,12 @@ const unPublishProductByShop = async ({ product_shop, product_id }) => {
   return modifiedCount;
 };
 
+const getProductById = async (productId) => {
+  return await product
+    .findOne({ _id: convertToObjectIdMongodb(productId) })
+    .lean();
+};
+
 module.exports = {
   findAllDraftForShop,
   publishProductByShop,
@@ -111,4 +118,5 @@ module.exports = {
   findAllProducts,
   findProduct,
   updateProductById,
+  getProductById,
 };
