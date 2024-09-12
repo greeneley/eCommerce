@@ -4,7 +4,6 @@ const express = require("express");
 const discountController = require("../../controllers/discount.controller");
 const asyncHandler = require("../../helpers/asyncHandler");
 const { authentication } = require("../../auth/authUtils");
-const productController = require("../../controllers/product.controller");
 const router = express.Router();
 
 router.post("/amount", asyncHandler(discountController.getDiscountAmount));
