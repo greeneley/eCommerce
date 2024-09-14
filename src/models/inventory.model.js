@@ -20,8 +20,12 @@ const inventorySchema = new Schema(
            */
   },
   {
-    timestamps: true,
+    // timestamps: true,
     collection: COLLECTION_NAME,
+    timestamps: {
+      createdAt: "createdOn",
+      updatedAt: "modifiedOn",
+    },
   },
 );
 
