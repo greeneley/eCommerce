@@ -175,6 +175,33 @@ class CheckoutService {
     }
     return newOrder;
   }
+
+  /*
+   *  1> Query orders [ users ]
+   *
+   *
+   * */
+
+  static async getOrderByUser() {}
+
+  /*
+   *  Query order using id [ users ]
+   *
+   *
+   * */
+
+  static async getOneOrderByUser() {}
+
+  /*
+   *  Cancel order using order
+   * */
+  static async cancelOrderByUser() {}
+
+  /*
+   *   Update order Status [shop | admin]
+   * */
+
+  static async updateOrderStatusByShop() {}
 }
 
 module.exports = CheckoutService;
